@@ -1,8 +1,8 @@
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-// import User from "@/app/(models)/User";
-// import bcrypt from "bcrypt";
+import User from "@/app/(models)/User";
+import bcrypt from "bcrypt";
 
 export const options = {
   providers: [
@@ -51,32 +51,32 @@ export const options = {
           placeholder: "your-password",
         },
       },
-    //   async authorize(credentials) {
-    //     try {
-    //       const foundUser = await User.findOne({ email: credentials.email })
-    //         .lean()
-    //         .exec();
+      async authorize(credentials) {
+        try {
+          const foundUser = await User.findOne({ email: credentials.email })
+            .lean()
+            .exec();
 
-    //       if (foundUser) {
-    //         console.log("User Exists");
-    //         const match = await bcrypt.compare(
-    //           credentials.password,
-    //           foundUser.password
-    //         );
+          if (foundUser) {
+            console.log("User Exists");
+            const match = await bcrypt.compare(
+              credentials.password,
+              foundUser.password
+            );
 
-    //         if (match) {
-    //           console.log("Good Pass");
-    //           delete foundUser.password;
+            if (match) {
+              console.log("Good Pass");
+              delete foundUser.password;
 
-    //           foundUser["role"] = "Unverified Email";
-    //           return foundUser;
-    //         }
-    //       }
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //     return null;
-    //   },
+              foundUser["role"] = "Unverified Email";
+              return foundUser;
+            }
+          }
+        } catch (error) {
+          console.log(error);
+        }
+        return null;
+      },
     }),
   ],
   callbacks: {

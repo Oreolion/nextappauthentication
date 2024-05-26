@@ -8,7 +8,7 @@ export default withAuth(
 
     if (
       req.nextUrl.pathname.startsWith("/createuser") &&
-      req.nextauth.token.role !== "admin"
+      req.nextauth.token.role != "admin"
     ) {
       return NextResponse.rewrite(new URL("/denied", req.url));
     }
